@@ -1,0 +1,29 @@
+# CI for the standalone UltraEdge Protocol repo.
+#
+# This file is DORMANT inside the private monorepo (GitHub Actions only reads workflows from a
+# repository's own root `.github/`, and here `protocol/` is a subdirectory). It activates
+# automatically once `protocol/` is fresh-init exported as its own public repo (see the private
+# repo's docs/PRODUCTION-RELEASE-PLAN.md §5.1 / Phase 1) — at which point this path becomes
+# `.github/workflows/ci.yml` at the repo root. It is the "CI green on every PR" proof point Phase 1
+# gates on: a permissive, dependency-free C++11 codec that builds and tests on a clean runner.
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: CMake build + ctest
+        run: |
+          cmake -B build .
+          cmake --build build
+          ctest --test-dir build --output-on-failure
+      - name: Direct g++ build (no CMake, no network — portability check)
+        run: |
+          g++ -std=c++11 -Wall -Wextra -Iinclude src/protocol.cpp tests/test_protocol.cpp -o test_protocol
+          ./test_protocol
+          g++ -std=c++11 -Wall -Wextra -Iinclude src/protocol.cpp demo/loopback_demo.cpp -o loopback_demo
+          ./loopback_demo

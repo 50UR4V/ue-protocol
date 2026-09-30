@@ -1,4 +1,4 @@
-// Ring-overflow cross-check (docs/09): proves the paced DESCRIBE_PAGE generator
+// Ring-overflow cross-check: proves the paced DESCRIBE_PAGE generator
 // survives the real USB-CDC TX ring, and that the old synchronous blast does not.
 //
 // It models usbSerialPutc EXACTLY: a fixed ring whose write pointer advances

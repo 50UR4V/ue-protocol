@@ -14,11 +14,10 @@ Implementing it elsewhere or embedding it? See [CONTRIBUTING](CONTRIBUTING.md) a
 ## Layout
 
 ```
-protocol/
-  include/ultraedge/protocol.h   public API + wire definitions
-  src/protocol.cpp               codec implementation
-  tests/test_protocol.cpp        dependency-free unit tests (own assert harness)
-  demo/loopback_demo.cpp         mock radio<->phone exchange
+include/ultraedge/protocol.h   public API + wire definitions
+src/protocol.cpp               codec implementation
+tests/test_protocol.cpp        dependency-free unit tests (own assert harness)
+demo/loopback_demo.cpp         mock radio<->phone exchange
   CMakeLists.txt                 standalone build (lib + tests + demo)
 ```
 

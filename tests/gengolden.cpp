@@ -1,4 +1,4 @@
-// Generate v2 golden frames (docs/10) for the Kotlin cross-check: exercises the
+// Generate v2 golden frames for the Kotlin cross-check: exercises the
 // FIELD_DESC v2 layout (u16 page, kind, icon, link target) + CONFIG_PAGES u16 ids.
 // Mirrors companion_emit.cpp buildRowDesc / GET_PAGES byte-for-byte.
 #include "ultraedge/protocol.h"

@@ -1,4 +1,4 @@
-// Engine cross-check (docs/10): value-encoding round-trips for the new output &
+// Engine cross-check: value-encoding round-trips for the new output &
 // timer fields, conditional-visibility row counts, and a ring test proving the
 // paced generator delivers the bigger list/detail pages with zero loss.
 #include "ultraedge/protocol.h"
@@ -24,7 +24,7 @@ static int outSet(Lim&l,int sub,int p){ switch(sub){
   case OUT_PPMCENTER:{int c=p-PPMC;if(c<-500||c>500)return NACK_OUT_OF_RANGE;l.ppm=c;return 0;}
   case OUT_SUBTRIMMODE:if(p<0||p>1)return NACK_OUT_OF_RANGE;l.sym=p?1:0;return 0;} return NACK_UNKNOWN_FIELD; }
 
-// ---- ring model (same as docs/09 ringcheck) --------------------------------
+// ---- ring model (same ring model as ringcheck) --------------------------------
 static const int RING=512; static uint8_t rb[RING]; static int rH,rT,rC; static long ov;
 static void rReset(){rH=rT=rC=0;ov=0;}
 static void rPut(uint8_t b){rb[rH]=b;rH=(rH+1)%RING; if(rC<RING)rC++; else{rT=(rT+1)%RING;ov++;}}

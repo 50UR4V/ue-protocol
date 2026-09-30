@@ -7,7 +7,7 @@
 //   * Pure logic — no USB/OS/target dependencies. The transport (USB-CDC on the
 //     radio, Android USB host on the phone) feeds bytes in and takes bytes out.
 //
-// See docs/01-companion-protocol.md for the design rationale. This header is the
+// See SPEC.md for the design rationale. This header is the
 // authoritative wire definition for Phase 2 (structured path).
 //
 // SPDX-License-Identifier: GPL-3.0-or-later  (matches EdgeTX for upstream mergeability)
@@ -24,11 +24,11 @@ namespace ultraedge {
 // Bump PROTO_VERSION on any wire-breaking change. Handshake negotiates to the
 // lowest common version; mismatched frames are dropped (never half-applied).
 //   v1: flat self-describing pages (Model Setup, 8-ch Outputs)
-//   v2: generalized UI engine (docs/10) — 16-bit page ids, LINK rows for
+//   v2: generalized UI engine — 16-bit page ids, LINK rows for
 //       list->detail navigation, server-side conditional visibility, and an
 //       ACK "restructure" hint so the app re-describes when a write changes
 //       which rows are visible. Mirrors EdgeTX colorlcd model menus.
-//   v3: named-value catalogs (docs/12) — T_REF fields carry a catalog id; the
+//   v3: named-value catalogs — T_REF fields carry a catalog id; the
 //       radio emits Source/Switch/Curve name catalogs (its own getSourceString
 //       etc.) so the phone shows real EdgeTX names in a picker, not raw indices.
 static const uint8_t PROTO_VERSION = 3;
@@ -73,7 +73,7 @@ enum MsgType : uint8_t {
   MSG_PAGE_DESC_END   = 0x37, // radio->phone: {u16 page_id} end-of-rows marker for a page  (v2: page_id u16)
   MSG_CONFIG_CHANGED  = 0x38, // radio->phone: {u16 field_id, u8 type, u8 len, bytes} value changed on radio (diff push)
 
-  MSG_GET_CAPS    = 0x39, // phone->radio: request the model/hardware structure (docs/12)
+  MSG_GET_CAPS    = 0x39, // phone->radio: request the model/hardware structure
   MSG_CAPS        = 0x3A, // radio->phone: {u8 count, [u8 key, i16 value]} value-space anchors
 
   MSG_AUDIO_EVENT = 0x40, // radio->phone: {event_id(2), param(2)} -- phone owns sound files
@@ -82,7 +82,7 @@ enum MsgType : uint8_t {
   MSG_NACK        = 0x71, // {ref_seq(1), reason(1)}
 };
 
-// ---- Traffic classes (QoS over the single CDC pipe; see docs/08) ------------
+// ---- Traffic classes (QoS over the single CDC pipe) ------------
 // Class derived from message type. Firmware scheduler services 0 > 1 > 2, with a
 // byte-budget cap on class 2 so streaming never starves control/config.
 enum TrafficClass : uint8_t {
@@ -106,7 +106,7 @@ enum StreamId : uint8_t {
   STREAM_LUA       = 3, // (later) LUA script data
 };
 
-// ---- Config field registry (typed-field access; see docs/06 + docs/07) -----
+// ---- Config field registry (typed-field access) -----
 // Field ids the phone can read/write. The firmware exposes a getter + validating
 // setter + a self-describing descriptor per id — this list IS the safety
 // boundary (only settings, never the control path). Grows field-by-field; the
@@ -129,13 +129,13 @@ enum ConfigField : uint16_t {
   CFG_THR_WARNING   =15,  // T_BOOL  !disableThrottleWarning
   CFG_JITTER_FILTER =16,  // T_ENUM  jitterFilter (Global/Off/On)
 
-  // ---- Outputs (docs/10) --------------------------------------------------
+  // ---- Outputs --------------------------------------------------
   // Per-channel detail field id = CFG_OUT_BASE | (channel<<4) | OutSub.
   // Channel list-row (summary/link) id  = CFG_OUTROW_BASE | channel.
   CFG_OUT_BASE      = 0x1000,
   CFG_OUTROW_BASE   = 0x1F00,
 
-  // ---- Timers (docs/10) ---------------------------------------------------
+  // ---- Timers ---------------------------------------------------
   // Per-timer detail field id = CFG_TMR_BASE | (timer<<4) | TmrSub.
   // Timer list-row (summary/link) id = CFG_TMRROW_BASE | timer.
   CFG_TMR_BASE      = 0x2000,
@@ -144,7 +144,7 @@ enum ConfigField : uint16_t {
   // Model Setup section LINK rows (Trims / Throttle / Other) id = base | section.
   CFG_SECROW_BASE   = 0x3000,
 
-  // ---- Per-item subsystems (docs/11) --------------------------------------
+  // ---- Per-item subsystems --------------------------------------
   // Each item occupies ITEM_STRIDE ids: detail field id = <BASE> + item*STRIDE + sub.
   // The list-page LINK/summary row for item i uses sub = SUB_SUMMARY.
   CFG_INPUT_BASE    = 0x4000,   // Inputs   (MAX_EXPOS)
@@ -159,7 +159,7 @@ enum ConfigField : uint16_t {
 // Model Setup section rows (each opens a sub-page of existing model fields).
 enum SecRow : uint8_t { SEC_TRIMS = 0, SEC_THROTTLE = 1, SEC_OTHER = 2 };
 
-// Per-item id layout (docs/11).
+// Per-item id layout.
 static const uint16_t ITEM_STRIDE = 0x20;   // ids reserved per list item
 static const uint8_t  SUB_SUMMARY = 0x1F;   // list-row summary/link sub-id
 
@@ -190,14 +190,14 @@ enum ConfigType : uint8_t {
   T_U8 = 1, T_I8 = 2, T_U16 = 3, T_I16 = 4, T_I32 = 5, T_STR = 6,
   T_BOOL = 7, T_ENUM = 8, T_LINK = 9,
   T_REF = 10,   // reference to a source/switch/curve — value is the raw index;
-                // the APP names it from CAPS anchors (docs/12), so a future
+                // the APP names it from CAPS anchors, so a future
                 // stringless MCU needs no name tables. Descriptor carries a domain.
 };
 
 // T_REF domains: which name space the value indexes. The app owns the naming.
 enum RefDomain : uint8_t { DOM_SOURCE = 1, DOM_SWITCH = 2, DOM_CURVE = 3 };
 
-// CAPS keys (MSG_CAPS): value-space anchors the app names from (docs/12). Each is
+// CAPS keys (MSG_CAPS): value-space anchors the app names from. Each is
 // a base index or a count; the app generates "CH3" / "SA↑" / "L2" / "CV3" etc.
 // from these. A future MCU with its own value space sends its own anchors — no
 // strings ever cross the wire.
@@ -222,7 +222,7 @@ enum IconId : uint8_t {
   IC_GENERAL, IC_THROTTLE, IC_TRIMS, IC_MONITOR, IC_CHANNEL,
 };
 
-// ---- Config pages (16-bit; mirrors EdgeTX colorlcd model menus; docs/10) ----
+// ---- Config pages (16-bit; mirrors EdgeTX colorlcd model menus) ----
 // Top-level pages appear in GET_PAGES and become tabs. Detail/sub pages are
 // reached by tapping a LINK row and are addressed by base+index.
 enum ConfigPage : uint16_t {

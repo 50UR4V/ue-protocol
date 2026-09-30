@@ -1,4 +1,4 @@
-// Cross-check for the full page set (docs/11): the biggest list pages (64-item
+// Cross-check for the full page set: the biggest list pages (64-item
 // Mixes / Logical Switches) through the 512-byte ring, plus GVar min/max offset
 // math and per-item id decoding.
 #include "ultraedge/protocol.h"
@@ -7,7 +7,7 @@
 #include <cstring>
 using namespace ultraedge;
 
-// ring model (docs/09)
+// ring model
 static const int RING=512; static uint8_t rb[RING]; static int rH,rT,rC; static long ov;
 static void rReset(){rH=rT=rC=0;ov=0;}
 static void rPut(uint8_t b){rb[rH]=b;rH=(rH+1)%RING; if(rC<RING)rC++; else{rT=(rT+1)%RING;ov++;}}
