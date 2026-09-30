@@ -9,9 +9,8 @@ language/implementation.
 
 | Project | What it is | Role | Implementation |
 |---|---|---|---|
-| [EdgeTX-UE fork](https://github.com/EdgeTX/edgetx) | EdgeTX firmware with the flag-gated companion overlay | Radio (firmware) | This repo's C++ codec, embedded in-tree |
-| UltraEdge app | Android companion app — the radio's screen on your phone | App (host) | Independent Kotlin implementation of the same wire |
+| [edgetx-ue](https://github.com/50UR4V/edgetx-ue) | EdgeTX fork with the flag-gated companion overlay (prebuilt firmware for Pocket & QX7) | Radio (firmware) | This repo's C++ codec, embedded in-tree |
+| [UltraEdge app](https://github.com/50UR4V/UltraEdge-app) ([Google Play](https://play.google.com/store/apps/details?id=com.ultraedge.companion)) | Android companion app — the radio's screen on your phone | App (host) | Independent Kotlin implementation of the same wire |
 
 > The two seed entries are UE Protocol's own reference implementations (one firmware, one app),
 > intentionally in two different languages to prove the spec — not the codec — is the contract.
-> Links resolve once each project is published (see the private repo's release plan).

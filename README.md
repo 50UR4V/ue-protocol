@@ -45,3 +45,10 @@ g++ -std=c++11 -Wall -Wextra -Iinclude src/protocol.cpp demo/loopback_demo.cpp  
 - Companion input (`KEY`/`TOUCH`/`CONFIG_WRITE`) is gated on `LINK_ATTACHED`.
 - Corrupt / oversize / wrong-version frames are dropped, never half-applied.
 - Loss of link → `DETACHED` → companion input disabled; control output unaffected.
+
+## Part of the UltraEdge ecosystem
+UE Protocol is the open link these projects speak — see [ADOPTERS](ADOPTERS.md):
+- **[edgetx-ue](https://github.com/50UR4V/edgetx-ue)** — EdgeTX fork with the companion overlay (prebuilt firmware for Pocket & QX7).
+- **[UltraEdge app](https://github.com/50UR4V/UltraEdge-app)** — the Android companion, on **[Google Play](https://play.google.com/store/apps/details?id=com.ultraedge.companion)**.
+
+The protocol is open (anyone can implement it); the app is a proprietary reference client.
