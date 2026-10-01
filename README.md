@@ -11,6 +11,8 @@ handshake, link-state gating, message catalog, conformance) is in **[`SPEC.md`](
 Implementing it elsewhere or embedding it? See [CONTRIBUTING](CONTRIBUTING.md) and add your project to
 [ADOPTERS](ADOPTERS.md).
 
+<p align="center"><img src="screenshots/UE_IMG4.jpeg" alt="UltraEdge app on a phone mounted to a RadioMaster radio, speaking UE Protocol over USB" width="420"><br><sub>What the protocol enables: the <a href="https://github.com/50UR4V/UltraEdge-app">UltraEdge app</a> driving an EdgeTX radio over USB.</sub></p>
+
 ## Layout
 
 ```
