@@ -31,7 +31,11 @@ namespace ultraedge {
 //   v3: named-value catalogs — T_REF fields carry a catalog id; the
 //       radio emits Source/Switch/Curve name catalogs (its own getSourceString
 //       etc.) so the phone shows real EdgeTX names in a picker, not raw indices.
-static const uint8_t PROTO_VERSION = 3;
+//   v4: self-describing TYPED value model (docs/protocol/PROTOCOL-V4.md) — one
+//       telemetry frame carries every value kind (scalar/text/gps/datetime/cells),
+//       feature-bit capability negotiation via Hello.caps, EVENT class, and BULK
+//       transfer + model-file pull/push. Gated by caps so an older peer still works.
+static const uint8_t PROTO_VERSION = 4;
 
 // ---- Framing constants (HDLC-style) ----------------------------------------
 // Frame on the wire:  SOF  <escaped: VER TYPE SEQ LEN_L LEN_H PAYLOAD... CRC_L CRC_H>

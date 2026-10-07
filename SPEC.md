@@ -6,7 +6,7 @@ reference; the **authoritative** definitions (constants, message ids, field layo
 [`src/protocol.cpp`](src/protocol.cpp) with tests in [`tests/`](tests/). Where this prose and the header
 disagree, the header wins.
 
-**Version:** `PROTO_VERSION = 3` (negotiated in the handshake; see §3). **Transport:** any reliable,
+**Version:** `PROTO_VERSION = 4` (negotiated in the handshake; see §3). **Transport:** any reliable,
 ordered byte stream — in practice USB-CDC serial. The protocol is transport-agnostic: one endpoint feeds
 received bytes into a decoder and writes encoded frames out.
 
