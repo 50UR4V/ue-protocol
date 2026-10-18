@@ -10,7 +10,8 @@
 // See SPEC.md for the design rationale. This header is the
 // authoritative wire definition for Phase 2 (structured path).
 //
-// SPDX-License-Identifier: GPL-3.0-or-later  (matches EdgeTX for upstream mergeability)
+// Copyright (c) 2026 Sourav Karmakar (UltraEdge)
+// SPDX-License-Identifier: MIT
 
 #ifndef ULTRAEDGE_PROTOCOL_H
 #define ULTRAEDGE_PROTOCOL_H

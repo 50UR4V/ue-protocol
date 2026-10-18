@@ -1,5 +1,6 @@
 // UltraEdge Companion Protocol — core codec implementation (embedded-safe C++11)
-// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (c) 2026 Sourav Karmakar (UltraEdge)
+// SPDX-License-Identifier: MIT
 
 #include "ultraedge/protocol.h"
 

@@ -1,5 +1,9 @@
 # UltraEdge Companion Protocol
 
+[![Code: MIT](https://img.shields.io/badge/code-MIT-yellow.svg)](LICENSE)
+[![Spec: CC BY 4.0](https://img.shields.io/badge/spec-CC%20BY%204.0-lightgrey.svg)](LICENSE-SPEC.md)
+[![Protocol: v4](https://img.shields.io/badge/protocol-v4-2dd4bf.svg)](SPEC.md)
+
 UltraEdge is building toward a **modular radio control system**: one where the controls you know — the
 feel of your gimbals, your switch layout, your case — can stay in your hands while the interface,
 computing and RF evolve. The Android companion is the first practical step, and **UE Protocol is the
@@ -70,11 +74,18 @@ UE Protocol is the open link these projects speak — see [ADOPTERS](ADOPTERS.md
 - **[UltraEdge app](https://github.com/50UR4V/UltraEdge-app)** — the Android companion, on **[Google Play](https://play.google.com/store/apps/details?id=com.ultraedge.companion)**.
 
 ## License
-UE Protocol is open and will remain open source; the UltraEdge Android app is a separate, proprietary
-client. File-level licence labels in this repository are currently being reconciled: the repository
-`LICENSE` is Apache-2.0, [CONTRIBUTING](CONTRIBUTING.md) describes an Apache-2.0 reference codec with a
-CC BY 4.0 specification, and `protocol.h` carries a `GPL-3.0-or-later` SPDX identifier. Check the file you
-are using until this is settled.
+[![Code: MIT](https://img.shields.io/badge/code-MIT-yellow.svg)](LICENSE)
+[![Spec: CC BY 4.0](https://licensebuttons.net/l/by/4.0/80x15.png)](LICENSE-SPEC.md)
+
+- **Code** (reference codec, tests, demo): **[MIT](LICENSE)**. Use it in open-source, closed-source or commercial
+  projects. MIT is GPL-2.0 compatible, which is how the same codec builds into the GPL-2.0 EdgeTX-UE firmware.
+- **Specification text** ([SPEC.md](SPEC.md) and the docs): **[CC BY 4.0](LICENSE-SPEC.md)**.
+
+*Licence change (2026-10-18): earlier releases of this repository were published under Apache-2.0, and those copies
+stay under Apache-2.0. Everything from this point on is MIT (code) and CC BY 4.0 (spec).*
+
+UE Protocol is open and will stay open source. The UltraEdge Android app is a separate, proprietary client that
+speaks it.
 
 UltraEdge is an independent project that builds on the EdgeTX community's work; it is not affiliated with
 or endorsed by EdgeTX.

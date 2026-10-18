@@ -4,7 +4,8 @@
 // KEY events phone->radio, and the button-gating link state.
 //
 // Build: g++ -std=c++11 -I../include ../src/protocol.cpp loopback_demo.cpp -o demo
-// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (c) 2026 Sourav Karmakar (UltraEdge)
+// SPDX-License-Identifier: MIT
 
 #include "ultraedge/protocol.h"
 #include <cstdio>

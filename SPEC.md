@@ -123,3 +123,8 @@ A conformant implementation:
 The host test suite (`tests/`) exercises framing, handshake, gating, and message round-trips; run it via
 CMake+ctest or the direct `g++` line in the [README](README.md). New implementations are welcome — add
 yourself to [`ADOPTERS.md`](ADOPTERS.md).
+
+---
+[![CC BY 4.0](https://licensebuttons.net/l/by/4.0/88x31.png)](https://creativecommons.org/licenses/by/4.0/)
+This specification is © 2026 Sourav Karmakar (UltraEdge), licensed under
+[CC BY 4.0](LICENSE-SPEC.md). The reference code is [MIT](LICENSE).

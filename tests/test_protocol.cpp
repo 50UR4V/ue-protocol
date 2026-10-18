@@ -1,6 +1,7 @@
 // UltraEdge protocol — dependency-free unit tests (no gtest, builds anywhere).
 // Build:  g++ -std=c++11 -I../include ../src/protocol.cpp test_protocol.cpp -o test
-// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (c) 2026 Sourav Karmakar (UltraEdge)
+// SPDX-License-Identifier: MIT
 
 #include "ultraedge/protocol.h"
 #include <cstdio>

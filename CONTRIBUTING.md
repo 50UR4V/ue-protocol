@@ -35,5 +35,6 @@ contract so independent implementations interoperate is the whole point.
 
 ## Licensing
 
-The reference codec is **Apache-2.0** and the protocol specification is **CC-BY-4.0** (see `LICENSE`
-files added at publication). By contributing you agree your contribution is licensed under those terms.
+The reference codec is **[MIT](LICENSE)** and the protocol specification is **[CC BY 4.0](LICENSE-SPEC.md)**.
+By contributing you agree that code contributions are licensed under MIT, and documentation/spec contributions
+under CC BY 4.0. New source files carry `// SPDX-License-Identifier: MIT`.
