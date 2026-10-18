@@ -70,7 +70,7 @@ and applies it, and it is gated on `LINK_ATTACHED`.
 
 ## Part of the UltraEdge ecosystem
 UE Protocol is the open link these projects speak — see [ADOPTERS](ADOPTERS.md):
-- **[edgetx-ue](https://github.com/50UR4V/edgetx-ue)** — EdgeTX fork with the companion overlay (prebuilt firmware for Pocket & QX7).
+- **[edgetx-ue](https://github.com/50UR4V/edgetx-ue)** — EdgeTX fork with the companion overlay (prebuilt firmware for Pocket, Zorro, QX7 & TX16S).
 - **[UltraEdge app](https://github.com/50UR4V/UltraEdge-app)** — the Android companion, on **[Google Play](https://play.google.com/store/apps/details?id=com.ultraedge.companion)**.
 
 ## License
