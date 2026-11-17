@@ -86,6 +86,3 @@ stay under Apache-2.0. Everything from this point on is MIT (code) and CC BY 4.0
 
 UE Protocol is open and will stay open source. The UltraEdge Android app is a separate, proprietary client that
 speaks it.
-
-UltraEdge is an independent project that builds on the EdgeTX community's work; it is not affiliated with
-or endorsed by EdgeTX.
