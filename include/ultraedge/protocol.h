@@ -83,6 +83,8 @@ enum MsgType : uint8_t {
 
   MSG_AUDIO_EVENT = 0x40, // radio->phone: {event_id(2), param(2)} -- phone owns sound files
 
+  MSG_TRIM_OP     = 0x4F, // phone->radio: {u8 op (TrimOp), u8 arg} -> ACK / NACK -- GATED on ATTACHED (CAP_TRIMS, §6.3)
+
   MSG_ACK         = 0x70, // {ref_seq(1)}
   MSG_NACK        = 0x71, // {ref_seq(1), reason(1)}
 };
@@ -123,6 +125,8 @@ enum ConfigField : uint16_t {
   CFG_THR_TRIM      = 4,  // T_BOOL  g_model.thrTrim
   CFG_TRIM_INC      = 5,  // T_ENUM  g_model.trimInc (Expo/ExFine/Fine/Medium/Coarse)
   CFG_EXTENDED_TRIMS= 6,  // T_BOOL  g_model.extendedTrims
+  CFG_GEN_AUX1_MODE = 71, // T_ENUM  radio AUX1 serial port: 0 Off, 1 UltraEdge companion link, 2 another mode (read-only); CAP_AUX_MODE
+  // 72: RETIRED, never reuse (a 2026-11-14 draft's wireless arm switch, never shipped; SPEC §3)
   CFG_DISPLAY_TRIMS = 7,  // T_ENUM  g_model.displayTrims (No/Change/Yes)
   CFG_TIMER1_MODE   = 8,  // T_ENUM  timers[0].mode (OFF/ON/Strt/THs/TH%/THt)
   CFG_TIMER1_PERSIST= 9,  // T_ENUM  timers[0].persistent (OFF/Flight/Manual)
@@ -276,6 +280,8 @@ static const uint8_t ACK_RESTRUCTURE = 0x01;  // ACK payload byte 2, bit0
 enum NackReason : uint8_t {
   NACK_UNKNOWN_FIELD = 1, NACK_BAD_TYPE = 2, NACK_BAD_LENGTH = 3,
   NACK_OUT_OF_RANGE = 4,  NACK_NOT_ATTACHED = 5,
+  NACK_PUSH_STATE = 6,    // a model transfer is open (MSG_TRIM_OP: retry after the model save commits)
+  NACK_AUX_IN_USE = 16,   // CFG_GEN_AUX1_MODE: the port holds another mode; it is never overwritten
 };
 
 // ---- Roles & capability bits ------------------------------------------------
@@ -286,7 +292,21 @@ enum Caps : uint32_t {
   CAP_DISPLAY_SYNC = 1u << 1, // S2 raw display/touch mirror (future, no protocol break)
   CAP_LUA_FEED     = 1u << 2, // can produce/consume LUA_DATA
   CAP_AUDIO        = 1u << 3, // phone renders AUDIO_EVENT from its own sound files
+  CAP_AUX_MODE     = 1u << 19, // radio has an AUX1 serial port and takes CFG_GEN_AUX1_MODE (§6.1)
+  CAP_FAST_STICKS  = 1u << 20, // STREAM_SOURCES above 30 Hz adds sticks-only frames (§6.2)
+  CAP_TRIMS        = 1u << 21, // CAPS CAP_N_TRIM = real trim count, live trims/GVar values survive a model save,
+                               // MSG_TRIM_OP answered (§6.3)
+  // bit 22: RETIRED, never reuse (a 2026-11-14 draft's wireless arm switch, never shipped; SPEC §3)
 };
+
+// MSG_TRIM_OP ops (§6.3): the trim commands of the radio's own menus.
+enum TrimOp : uint8_t {
+  TRIM_RESET        = 0, // every trim of every flight mode cleared (arg ignored)
+  TRIMS_TO_SUBTRIMS = 1, // all trims added to the outputs' subtrims, trims zeroed (arg ignored)
+  TRIM_TO_SUBTRIM   = 2, // the trims' effect on output channel `arg` (0-based) added to its subtrim
+  STICK_TO_SUBTRIM  = 3, // output channel `arg`'s current stick position made its subtrim
+};
+static const uint8_t TRIM_OP_COUNT = 4;
 
 // ---- Link state machine -----------------------------------------------------
 // The hard requirement: when no phone is attached, the radio's physical nav
@@ -333,6 +353,7 @@ size_t encodeChannels(uint8_t seq, const int16_t* ch, uint8_t count,
                       uint8_t* out, size_t out_cap);
 size_t encodeKey(uint8_t seq, uint8_t keycode, uint8_t event,
                  uint8_t* out, size_t out_cap);
+size_t encodeTrimOp(uint8_t seq, uint8_t op, uint8_t arg, uint8_t* out, size_t out_cap);
 
 // ---- Streaming decoder ------------------------------------------------------
 // Feed received bytes; whenever a complete, CRC-valid, version-accepted frame is
@@ -373,6 +394,9 @@ class Decoder {
 bool parseHello(const Message& m, Hello& out);
 // Parses CHANNELS payload into caller array; returns channel count (0 on error).
 uint8_t parseChannels(const Message& m, int16_t* out, uint8_t max_count);
+// Parses a TRIM_OP payload. Returns 0 when op/arg are usable, else the NackReason a radio answers with
+// (NACK_BAD_LENGTH: short payload; NACK_OUT_OF_RANGE: unknown op, or channel >= num_channels for ops 2 and 3).
+uint8_t parseTrimOp(const Message& m, uint8_t num_channels, uint8_t& op, uint8_t& arg);
 
 // ---- Link manager -----------------------------------------------------------
 // Tracks link state from handshake + heartbeat, and exposes the gating decision.

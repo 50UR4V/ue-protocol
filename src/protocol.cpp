@@ -99,6 +99,11 @@ size_t encodeKey(uint8_t seq, uint8_t keycode, uint8_t event,
   return encodeFrame(MSG_KEY, seq, p, 2, out, out_cap);
 }
 
+size_t encodeTrimOp(uint8_t seq, uint8_t op, uint8_t arg, uint8_t* out, size_t out_cap) {
+  uint8_t p[2] = { op, arg };
+  return encodeFrame(MSG_TRIM_OP, seq, p, 2, out, out_cap);
+}
+
 // ---- Decoder ----------------------------------------------------------------
 void Decoder::reset() {
   in_frame_ = false; escaping_ = false; buf_len_ = 0;
@@ -193,6 +198,14 @@ uint8_t parseChannels(const Message& m, int16_t* out, uint8_t max_count) {
     out[i] = (int16_t)((uint16_t)m.payload[1+2*i] | ((uint16_t)m.payload[1+2*i+1] << 8));
   }
   return count;
+}
+
+uint8_t parseTrimOp(const Message& m, uint8_t num_channels, uint8_t& op, uint8_t& arg) {
+  if (m.type != MSG_TRIM_OP || m.len < 2 || !m.payload) return NACK_BAD_LENGTH;
+  op = m.payload[0]; arg = m.payload[1];
+  if (op >= TRIM_OP_COUNT) return NACK_OUT_OF_RANGE;
+  if ((op == TRIM_TO_SUBTRIM || op == STICK_TO_SUBTRIM) && arg >= num_channels) return NACK_OUT_OF_RANGE;
+  return 0;
 }
 
 // ---- LinkManager ------------------------------------------------------------

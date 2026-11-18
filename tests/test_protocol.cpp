@@ -178,6 +178,44 @@ static void test_buttons_inert_when_detached() {
   CHECK(dispatchLocalKeyToCompanion(1) == false);  // inert again, no ghost-scroll
 }
 
+// s68 (ADR-0066): MSG_TRIM_OP round-trips and validates exactly as the radio answers it.
+static void test_trim_op() {
+  // The contract the app holds (Protocol.kt): ids and bits must not drift.
+  CHECK(MSG_TRIM_OP == 0x4F);
+  CHECK(CAP_TRIMS == (1u << 21));
+  CHECK(TRIM_RESET == 0 && TRIMS_TO_SUBTRIMS == 1 && TRIM_TO_SUBTRIM == 2 && STICK_TO_SUBTRIM == 3);
+  CHECK(CAP_N_TRIM == 10);
+
+  uint8_t f[MAX_FRAME_WIRE];
+  size_t n = encodeTrimOp(9, STICK_TO_SUBTRIM, 3, f, sizeof(f));
+  CHECK(n > 0);
+  Capture cap; Decoder d; d.setCallback(onMsg, &cap); d.feed(f, n);
+  CHECK(cap.count == 1);
+  CHECK(cap.types[0] == MSG_TRIM_OP);
+  CHECK(cap.seqs[0] == 9);
+  CHECK(cap.last_len == 2);
+  Message m; m.type = MSG_TRIM_OP; m.seq = 9; m.payload = cap.last_payload; m.len = cap.last_len;
+  uint8_t op = 0xFF, arg = 0xFF;
+  CHECK(parseTrimOp(m, 32, op, arg) == 0);
+  CHECK(op == STICK_TO_SUBTRIM && arg == 3);
+
+  // channel out of range for the channel ops; ignored for the whole-model ops
+  uint8_t p[2] = { TRIM_TO_SUBTRIM, 32 }; m.payload = p; m.len = 2;
+  CHECK(parseTrimOp(m, 32, op, arg) == NACK_OUT_OF_RANGE);
+  p[1] = 31; CHECK(parseTrimOp(m, 32, op, arg) == 0);
+  p[0] = TRIM_RESET; p[1] = 200; CHECK(parseTrimOp(m, 32, op, arg) == 0);
+  p[0] = TRIMS_TO_SUBTRIMS;      CHECK(parseTrimOp(m, 32, op, arg) == 0);
+  // unknown op, short payload, wrong type
+  p[0] = 4; p[1] = 0; CHECK(parseTrimOp(m, 32, op, arg) == NACK_OUT_OF_RANGE);
+  m.len = 1;          CHECK(parseTrimOp(m, 32, op, arg) == NACK_BAD_LENGTH);
+  m.len = 2; m.type = MSG_KEY; CHECK(parseTrimOp(m, 32, op, arg) == NACK_BAD_LENGTH);
+
+  // gated like every actuator message: a radio refuses it until the link is ATTACHED
+  LinkManager radio(ROLE_RADIO);
+  radio.onTransportUp();
+  CHECK(radio.companionInputAllowed() == false);
+}
+
 int main() {
   std::printf("UltraEdge protocol tests\n");
   test_crc_known_vector();
@@ -189,6 +227,7 @@ int main() {
   test_version_mismatch_refused();
   test_heartbeat_timeout_detaches();
   test_buttons_inert_when_detached();
+  test_trim_op();
   std::printf("\n%d passed, %d failed\n", g_pass, g_fail);
   return g_fail ? 1 : 0;
 }
